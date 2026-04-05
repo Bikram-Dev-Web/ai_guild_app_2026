@@ -1,0 +1,95 @@
+// Prisma Schema - Database definition
+// File: backend/prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================================
+// USERS TABLE
+// ============================================================
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  password  String
+  username  String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  lastLogin DateTime? @map("last_login")
+  preferences Json?
+
+  // Relations
+  bookmarks Bookmark[]
+
+  @@map("users")
+}
+
+// ============================================================
+// ARTICLES TABLE
+// ============================================================
+model Article {
+  id        Int     @id @default(autoincrement())
+  url       String  @unique
+  title     String
+  description String?
+  content   String?
+  author    String?
+  imageUrl  String? @map("image_url")
+  source    String
+  category  String
+  publishedAt DateTime? @map("published_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  summaries Summary[]
+  bookmarks Bookmark[]
+
+  @@index([category])
+  @@index([createdAt(sort: Desc)])
+  @@index([source])
+  @@map("articles")
+}
+
+// ============================================================
+// SUMMARIES TABLE
+// ============================================================
+model Summary {
+  id        Int     @id @default(autoincrement())
+  articleUrl String  @unique @map("article_url")
+  summary   String
+  summaryModel String? @map("summary_model")
+  createdAt DateTime @default(now()) @map("created_at")
+  tokenUsage Int? @map("token_usage")
+
+  // Relation
+  article Article? @relation(fields: [articleUrl], references: [url], onDelete: Cascade)
+
+  @@map("summaries")
+}
+
+// ============================================================
+// BOOKMARKS TABLE
+// ============================================================
+model Bookmark {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @map("user_id")
+  articleId Int     @map("article_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  notes     String?
+
+  // Relations
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, articleId])
+  @@index([userId])
+  @@index([articleId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("bookmarks")
+}

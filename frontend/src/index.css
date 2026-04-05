@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-full font-semibold transition-all duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-rose-400 to-pink-400 text-white hover:shadow-lg hover:shadow-rose-200 hover:-translate-y-0.5;
+  }
+
+  .btn-secondary {
+    @apply bg-rose-400 text-white hover:bg-rose-500 hover:shadow-md hover:shadow-rose-200;
+  }
+
+  .btn-outline {
+    @apply border-2 border-rose-300 text-rose-600 hover:bg-rose-50 hover:border-rose-400;
+  }
+
+  .btn-google {
+    @apply border-2 border-rose-200 text-gray-800 hover:bg-rose-50 flex items-center justify-center gap-2;
+  }
+
+  .btn-link {
+    @apply text-rose-600 hover:text-rose-700 underline;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1;
+  }
+
+  .card > img {
+    @apply w-full h-48 object-cover rounded-t-2xl;
+  }
+
+  .error-message {
+    @apply bg-rose-50 border border-rose-300 text-rose-800 px-4 py-3 rounded-xl my-4;
+  }
+
+  .summary-box {
+    @apply bg-rose-50 border-l-4 border-rose-400 p-4 rounded-lg mt-4;
+  }
+
+  .summary-box h3 {
+    @apply text-rose-700 font-bold;
+  }
+
+  .summary-box p {
+    @apply text-rose-700 text-sm leading-relaxed;
+  }
+}
+
+@layer base {
+  input:focus,
+  textarea:focus,
+  select:focus {
+    @apply outline-none ring-2 ring-purple-500 ring-offset-2;
+  }
+}
