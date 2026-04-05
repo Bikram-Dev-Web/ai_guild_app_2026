@@ -27,32 +27,38 @@ const NewsCard: React.FC<NewsCardProps> = ({ article }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
 
-  const handleSummarize = async () => {
-    if (!article.content) {
-      alert("Content not available for this article");
-      return;
-    }
+const handleSummarize = async () => {
+  // ✅ NEW: check login first
+  if (!isAuthenticated) {
+    alert("🔒 Please login to generate AI summaries");
+    return;
+  }
 
-    // If we already fetched the summary, just toggle its visibility
-    if (summary) {
-      setShowSummary(!showSummary);
-      return;
-    }
+  if (!article.content) {
+    alert("Content not available for this article");
+    return;
+  }
 
-    setSummarizing(true);
-    try {
-      const result = await summaryAPI.generateSummary(
-        article.url,
-        article.content,
-      );
-      setSummary(result.data.summary);
-      setShowSummary(true); // Show it once successfully fetched
-    } catch (error: any) {
-      alert("Failed to generate summary: " + error.error);
-    } finally {
-      setSummarizing(false);
-    }
-  };
+  // If already fetched → toggle
+  if (summary) {
+    setShowSummary(!showSummary);
+    return;
+  }
+
+  setSummarizing(true);
+  try {
+    const result = await summaryAPI.generateSummary(
+      article.url,
+      article.content,
+    );
+    setSummary(result.data.summary);
+    setShowSummary(true);
+  } catch (error: any) {
+    alert("Failed to generate summary: " + error.error);
+  } finally {
+    setSummarizing(false);
+  }
+};
 
   const handleBookmark = async () => {
     if (!isAuthenticated) {
